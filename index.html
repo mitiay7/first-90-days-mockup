@@ -677,6 +677,95 @@
     z-index: 100;
   }
 
+  .mode-banner {
+    background: var(--warn-soft);
+    border: 1px solid #f0d3a5;
+    color: #6f4b20;
+    border-radius: 8px;
+    padding: 11px 14px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  nav.menu li a.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  nav.menu li a.disabled:hover { background: transparent; }
+
+  .slot-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 18px;
+  }
+
+  .slot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .slot-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .slot-card.inactive { opacity: 0.55; }
+
+  .bot-profile-preview {
+    border: 1px solid var(--border);
+    background: #fcf8f1;
+    border-radius: 8px;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+
+  .bot-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #b85c38, #d4a574);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Iowan Old Style', Georgia, serif;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .bot-preview-name { font-weight: 700; font-size: 15px; margin-bottom: 3px; }
+  .bot-preview-username { color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .bot-preview-copy { color: var(--text); font-size: 12.5px; line-height: 1.5; }
+
+  .secret-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .secret-pill {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    background: #fcf8f1;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+  }
+
   /* Tabs */
   .tabs {
     display: flex;
@@ -757,26 +846,41 @@
     box-shadow: 0 2px 8px rgba(60, 40, 20, 0.04);
   }
 
-  .mobile-topbar .burger {
-    width: 40px; height: 40px;
+  .mobile-topbar .menu-trigger {
+    height: 40px;
+    padding: 0 14px 0 12px;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 999px;
     background: var(--surface);
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
+    gap: 8px;
     cursor: pointer;
     flex-shrink: 0;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text);
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
   }
-  .mobile-topbar .burger span {
-    display: block;
+  .mobile-topbar .menu-trigger:hover,
+  .mobile-topbar .menu-trigger:focus-visible {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+    outline: none;
+  }
+  .mobile-topbar .menu-trigger svg {
     width: 18px;
-    height: 2px;
-    background: var(--text);
-    border-radius: 2px;
+    height: 18px;
+    color: var(--accent);
+    flex-shrink: 0;
   }
+  .mobile-topbar .menu-trigger.open {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .mobile-topbar .menu-trigger.open svg { color: var(--accent); }
 
   .mobile-topbar .brand-name {
     font-family: 'Iowan Old Style', Georgia, serif;
@@ -810,6 +914,9 @@
 
   /* === Mobile === */
   @media (max-width: 768px) {
+    /* Body перестаёт быть flex-row, иначе sticky-topbar сжимается в колонку */
+    body { display: block; }
+
     .mockup-banner { font-size: 10px; padding: 4px 10px; top: 8px; right: 8px; }
 
     .mobile-topbar { display: flex; }
@@ -840,6 +947,7 @@
     .kpi-card .value { font-size: 22px; }
 
     .two-col, .profile-grid { grid-template-columns: 1fr; gap: 14px; }
+    .slot-grid { grid-template-columns: 1fr; }
 
     /* Form rows stack labels above inputs */
     .form-row {
@@ -907,8 +1015,16 @@
 <div class="mockup-banner">Mockup</div>
 
 <header class="mobile-topbar">
-  <button class="burger" id="burger" aria-label="Меню">
-    <span></span><span></span><span></span>
+  <button class="menu-trigger" id="menu-trigger" aria-label="Открыть меню" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <circle cx="5" cy="6" r="1.4" fill="currentColor" stroke="none"/>
+      <line x1="9" y1="6" x2="20" y2="6"/>
+      <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/>
+      <line x1="9" y1="12" x2="20" y2="12"/>
+      <circle cx="5" cy="18" r="1.4" fill="currentColor" stroke="none"/>
+      <line x1="9" y1="18" x2="16" y2="18"/>
+    </svg>
+    <span>Меню</span>
   </button>
   <div class="brand-name">Первые 90 дней</div>
 </header>
@@ -931,23 +1047,15 @@
         <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></span>
         Капсулы
       </a></li>
-      <li><a data-page="capsule-edit">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
-        &nbsp;&nbsp;↳ редактор
-      </a></li>
       <li><a data-page="users">
         <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
         Пользователи
-      </a></li>
-      <li><a data-page="user-detail">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-        &nbsp;&nbsp;↳ профиль
       </a></li>
       <li><a data-page="broadcast">
         <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></span>
         Объявление
       </a></li>
-      <li><a data-page="payments">
+      <li><a class="disabled" aria-disabled="true" title="Платежи включатся при PAYWALL_ENABLED=true">
         <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
         Платежи
       </a></li>
@@ -962,19 +1070,24 @@
     <div class="avatar">НА</div>
     <div class="meta">
       <div class="name">Наташа А.</div>
-      <div class="role">контент-менеджер</div>
+      <div class="role">админ</div>
     </div>
   </div>
 </aside>
 
 <main>
 
+<div class="mode-banner">
+  <span class="badge badge-warn badge-dot">PAYWALL_ENABLED=false</span>
+  <span>Открытое тестирование: вся программа бесплатна, тарифы и платежи скрыты до включения флага оплаты.</span>
+</div>
+
 <!-- ============ DASHBOARD ============ -->
 <div class="page active" id="page-dashboard">
   <div class="page-header">
     <div>
       <h2>Дашборд</h2>
-      <div class="subtitle">Сегодня — 27 апреля 2026, воскресенье</div>
+      <div class="subtitle">Сегодня — 27 апреля 2026, понедельник</div>
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
       <div class="tabs-pills" data-tab-group>
@@ -994,14 +1107,14 @@
       <div class="trend">+8.2% за неделю</div>
     </div>
     <div class="kpi-card">
-      <div class="label">Конверсия trial → paid</div>
-      <div class="value">31%</div>
-      <div class="trend">+2.4% за неделю</div>
+      <div class="label">Бесплатный режим</div>
+      <div class="value">100%</div>
+      <div class="trend">PAYWALL off</div>
     </div>
     <div class="kpi-card">
-      <div class="label">Доход за апрель</div>
-      <div class="value">528K ₽</div>
-      <div class="trend">+12% к марту</div>
+      <div class="label">Активных слотов</div>
+      <div class="value">12</div>
+      <div class="trend">4 seed-роли × 3</div>
     </div>
     <div class="kpi-card">
       <div class="label">Среднее настроение</div>
@@ -1012,27 +1125,27 @@
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
     <div class="card">
-      <div class="card-header"><h3>Воронка тарифов (апрель)</h3></div>
+      <div class="card-header"><h3>Готовность контента</h3></div>
       <div class="card-body">
         <div class="funnel-row">
-          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Free trial</div>
-          <div class="funnel-bar" style="width: 100%;">2 840</div>
+          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Утро</div>
+          <div class="funnel-bar" style="width: 100%;">348</div>
         </div>
         <div class="funnel-row">
-          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Неделя</div>
-          <div class="funnel-bar" style="width: 56%;">1 590</div>
+          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">День</div>
+          <div class="funnel-bar" style="width: 31%;">112</div>
         </div>
         <div class="funnel-row">
-          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Месяц</div>
-          <div class="funnel-bar" style="width: 31%;">880</div>
+          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Вечер</div>
+          <div class="funnel-bar" style="width: 24%;">86</div>
         </div>
         <div class="funnel-row">
-          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">90 дней</div>
-          <div class="funnel-bar" style="width: 18%;">514</div>
+          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Без медиа</div>
+          <div class="funnel-bar" style="width: 7%;">12</div>
         </div>
         <div class="funnel-row">
-          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Навсегда</div>
-          <div class="funnel-bar" style="width: 9%;">253</div>
+          <div style="width: 130px; font-size: 13px; color: var(--text-muted);">Пустые</div>
+          <div class="funnel-bar" style="width: 67%;">720</div>
         </div>
       </div>
     </div>
@@ -1059,38 +1172,38 @@
   </div>
 
   <div class="card" style="margin-top: 20px;">
-    <div class="card-header"><h3>Последние подписки</h3></div>
+    <div class="card-header"><h3>Новые участники теста</h3></div>
     <table class="data">
       <thead>
-        <tr><th>Пользователь</th><th>Роль</th><th>Тариф</th><th>Сумма</th><th>Когда</th></tr>
+        <tr><th>Пользователь</th><th>Роль клиента</th><th>Статус</th><th>День</th><th>Когда</th></tr>
       </thead>
       <tbody>
         <tr>
           <td><strong>Анна Соколова</strong> · @anna_s</td>
           <td><span class="badge badge-neutral">Менеджер</span></td>
-          <td><span class="badge badge-accent">90 дней</span></td>
-          <td>4 990 ₽</td>
+          <td><span class="badge badge-success">Free</span></td>
+          <td>День 1</td>
           <td>2 минуты назад</td>
         </tr>
         <tr>
           <td><strong>Дмитрий Орлов</strong> · @d_orlov</td>
           <td><span class="badge badge-neutral">Менеджер менеджеров</span></td>
-          <td><span class="badge badge-accent">Навсегда</span></td>
-          <td>14 990 ₽</td>
+          <td><span class="badge badge-success">Free</span></td>
+          <td>День 3</td>
           <td>17 минут назад</td>
         </tr>
         <tr>
           <td><strong>Елена Войтенко</strong> · @e_voytenko</td>
           <td><span class="badge badge-neutral">CEO</span></td>
-          <td><span class="badge badge-accent">Месяц</span></td>
-          <td>1 990 ₽</td>
+          <td><span class="badge badge-success">Free</span></td>
+          <td>День 7</td>
           <td>1 час назад</td>
         </tr>
         <tr>
           <td><strong>Михаил Петров</strong> · @m_petrov</td>
           <td><span class="badge badge-neutral">Эксперт</span></td>
-          <td><span class="badge badge-accent">Неделя</span></td>
-          <td>590 ₽</td>
+          <td><span class="badge badge-success">Free</span></td>
+          <td>День 2</td>
           <td>2 часа назад</td>
         </tr>
       </tbody>
@@ -1103,7 +1216,7 @@
   <div class="page-header">
     <div>
       <h2>Капсулы контента</h2>
-      <div class="subtitle">348 из 1 080 готовы · 12 без медиа · 720 ещё не созданы</div>
+      <div class="subtitle">348 из 1 080 готовы · роли и слоты берутся из справочников · 12 без медиа</div>
     </div>
     <button class="btn btn-primary">+ Новая капсула</button>
   </div>
@@ -1259,6 +1372,275 @@
   </div>
 </div>
 
+<!-- ============ CLIENT ROLES ============ -->
+<div class="page" id="page-roles">
+  <div class="page-header">
+    <div>
+      <h2>Роли клиентов</h2>
+      <div class="subtitle">Настройки → справочник клиентских ролей для онбординга, слотов и контента</div>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary" data-page="settings">← К настройкам</button>
+      <button class="btn btn-secondary">Восстановить seed</button>
+      <button class="btn btn-primary">+ Новая роль</button>
+    </div>
+  </div>
+
+  <div class="mode-banner">
+    <span class="badge badge-success badge-dot">Seed активен</span>
+    <span>Стартовые роли: Эксперт, Менеджер, Менеджер менеджеров, CEO. Новые роли автоматически получают предложение создать слоты 09:00 / 13:00 / 19:00.</span>
+  </div>
+
+  <div class="slot-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3>Активные роли</h3>
+        <span class="badge badge-success badge-dot">4 видны</span>
+      </div>
+      <div class="card-body">
+        <div class="slot-list">
+          <div class="slot-card">
+            <span class="day-chip">1</span>
+            <div>
+              <div style="font-weight: 600;">Эксперт</div>
+              <div style="color: var(--text-muted); font-size: 12px;">expert · видна в онбординге</div>
+            </div>
+            <span class="badge badge-success">3 слота</span>
+          </div>
+          <div class="slot-card">
+            <span class="day-chip">2</span>
+            <div>
+              <div style="font-weight: 600;">Менеджер</div>
+              <div style="color: var(--text-muted); font-size: 12px;">manager · видна в онбординге</div>
+            </div>
+            <span class="badge badge-success">3 слота</span>
+          </div>
+          <div class="slot-card">
+            <span class="day-chip">3</span>
+            <div>
+              <div style="font-weight: 600;">Менеджер менеджеров</div>
+              <div style="color: var(--text-muted); font-size: 12px;">manager_of_managers · видна</div>
+            </div>
+            <span class="badge badge-success">3 слота</span>
+          </div>
+          <div class="slot-card">
+            <span class="day-chip">4</span>
+            <div>
+              <div style="font-weight: 600;">CEO</div>
+              <div style="color: var(--text-muted); font-size: 12px;">ceo · видна в онбординге</div>
+            </div>
+            <span class="badge badge-success">3 слота</span>
+          </div>
+          <div class="slot-card inactive">
+            <span class="day-chip">5</span>
+            <div>
+              <div style="font-weight: 600;">Тимлид</div>
+              <div style="color: var(--text-muted); font-size: 12px;">teamlead · черновик</div>
+            </div>
+            <span class="badge badge-neutral">скрыта</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Редактирование роли</h3>
+        <span class="badge badge-neutral">client_role_id: 2</span>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <label>Slug <span class="hint">для путей и интеграций</span></label>
+          <input type="text" value="manager" style="font-family: monospace;">
+        </div>
+        <div class="form-row">
+          <label>Название в боте</label>
+          <input type="text" value="Менеджер">
+        </div>
+        <div class="form-row">
+          <label>Описание <span class="hint">для админки</span></label>
+          <textarea>Руководитель команды, который впервые или недавно получил управленческую роль.</textarea>
+        </div>
+        <div class="form-row">
+          <label>Порядок в онбординге</label>
+          <input type="number" value="2" min="1" style="width: 90px;">
+        </div>
+        <div class="form-row">
+          <label>Статус</label>
+          <div style="display: flex; gap: 18px; flex-wrap: wrap;">
+            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" checked> Активна
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="checkbox" checked> Видна в онбординге
+            </label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Seed-слоты</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="slot-chip slot-morning">Утро +0</span>
+            <span class="slot-chip slot-day">День +240</span>
+            <span class="slot-chip slot-evening">Вечер +600</span>
+            <button class="btn btn-secondary">Создать недостающие</button>
+          </div>
+        </div>
+      </div>
+      <div class="editor-actions">
+        <button class="btn btn-secondary">Скрыть из онбординга</button>
+        <button class="btn btn-primary">Сохранить роль</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 18px;">
+    <div class="card-header"><h3>Сводка по контенту</h3></div>
+    <table class="data">
+      <thead>
+        <tr><th>Роль клиента</th><th>Видимость</th><th>Слоты</th><th>Капсулы</th><th>Пользователи</th><th>Удаление</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Эксперт</strong></td><td><span class="badge badge-success">видна</span></td><td>3 активных</td><td>270 в матрице</td><td>184</td><td>только архив</td></tr>
+        <tr><td><strong>Менеджер</strong></td><td><span class="badge badge-success">видна</span></td><td>3 активных</td><td>270 в матрице</td><td>621</td><td>только архив</td></tr>
+        <tr><td><strong>Менеджер менеджеров</strong></td><td><span class="badge badge-success">видна</span></td><td>3 активных</td><td>270 в матрице</td><td>338</td><td>только архив</td></tr>
+        <tr><td><strong>CEO</strong></td><td><span class="badge badge-success">видна</span></td><td>3 активных</td><td>270 в матрице</td><td>104</td><td>только архив</td></tr>
+        <tr><td><strong>Тимлид</strong></td><td><span class="badge badge-neutral">скрыта</span></td><td>0</td><td>0</td><td>0</td><td>можно удалить</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ ROLE SLOTS ============ -->
+<div class="page" id="page-slots">
+  <div class="page-header">
+    <div>
+      <h2>Слоты по ролям</h2>
+      <div class="subtitle">Настройки → роли берутся из справочника «Роли клиентов»; seed слотов сейчас 09:00 / 13:00 / 19:00</div>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary" data-page="settings">← К настройкам</button>
+      <button class="btn btn-secondary">Восстановить seed</button>
+      <button class="btn btn-primary">+ Новый слот</button>
+    </div>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <button>Эксперт</button>
+      <button class="active">Менеджер</button>
+      <button>М. менеджеров</button>
+      <button>CEO</button>
+    </div>
+    <div class="tabs-pills">
+      <button class="active">Активные</button>
+      <button>Архив</button>
+    </div>
+  </div>
+
+  <div class="slot-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3>Менеджер</h3>
+        <span class="badge badge-success badge-dot">3 активных</span>
+      </div>
+      <div class="card-body">
+        <div class="slot-list">
+          <div class="slot-card">
+            <span class="day-chip">1</span>
+            <div>
+              <div style="font-weight: 600;">Утро</div>
+              <div style="color: var(--text-muted); font-size: 12px;">morning · +0 мин</div>
+            </div>
+            <span class="slot-chip slot-morning">09:00</span>
+          </div>
+          <div class="slot-card">
+            <span class="day-chip">2</span>
+            <div>
+              <div style="font-weight: 600;">День</div>
+              <div style="color: var(--text-muted); font-size: 12px;">day · +240 мин</div>
+            </div>
+            <span class="slot-chip slot-day">13:00</span>
+          </div>
+          <div class="slot-card">
+            <span class="day-chip">3</span>
+            <div>
+              <div style="font-weight: 600;">Вечер</div>
+              <div style="color: var(--text-muted); font-size: 12px;">evening · +600 мин</div>
+            </div>
+            <span class="slot-chip slot-evening">19:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Редактирование слота</h3>
+        <span class="badge badge-neutral">role_slot_id: 12</span>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <label>Роль клиента</label>
+          <select style="width: 260px;">
+            <option>Эксперт</option>
+            <option selected>Менеджер</option>
+            <option>Менеджер менеджеров</option>
+            <option>CEO</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Ключ слота</label>
+          <input type="text" value="morning" style="font-family: monospace;">
+        </div>
+        <div class="form-row">
+          <label>Название</label>
+          <input type="text" value="Утро">
+        </div>
+        <div class="form-row">
+          <label>Порядок</label>
+          <input type="number" value="1" min="1" style="width: 90px;">
+        </div>
+        <div class="form-row">
+          <label>Смещение от базового времени</label>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="number" value="0" style="width: 100px;">
+            <span style="color: var(--text-muted);">минут</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Типичный контент</label>
+          <input type="text" value="Утренний подкаст или текст-приветствие">
+        </div>
+        <div class="form-row">
+          <label>Статус</label>
+          <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" checked> Активен
+          </label>
+        </div>
+      </div>
+      <div class="editor-actions">
+        <button class="btn btn-secondary">Архивировать</button>
+        <button class="btn btn-primary">Сохранить слот</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 18px;">
+    <div class="card-header"><h3>Сводка по ролям</h3></div>
+    <table class="data">
+      <thead>
+        <tr><th>Роль клиента</th><th>Активные слоты</th><th>Матрица на 90 дней</th><th>Последнее изменение</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Эксперт</strong></td><td>3</td><td>270 капсул</td><td>seed · сегодня</td></tr>
+        <tr><td><strong>Менеджер</strong></td><td>3</td><td>270 капсул</td><td>редактировано 12 минут назад</td></tr>
+        <tr><td><strong>Менеджер менеджеров</strong></td><td>3</td><td>270 капсул</td><td>seed · сегодня</td></tr>
+        <tr><td><strong>CEO</strong></td><td>3</td><td>270 капсул</td><td>seed · сегодня</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <!-- ============ CAPSULE EDIT ============ -->
 <div class="page" id="page-capsule-edit">
   <div class="page-header">
@@ -1267,7 +1649,7 @@
       <div class="subtitle">Менеджер · день 1 · утро · подкаст</div>
     </div>
     <div style="display: flex; gap: 8px;">
-      <button class="btn btn-secondary">← Назад</button>
+      <button class="btn btn-secondary" data-page="capsules">← К списку</button>
       <button class="btn btn-primary">Сохранить</button>
     </div>
   </div>
@@ -1277,7 +1659,7 @@
       <div class="card-body" style="padding: 0;">
         <div style="padding: 20px;">
           <div class="form-row">
-            <label>Роль <span class="hint">кому пойдёт капсула</span></label>
+            <label>Роль клиента <span class="hint">из справочника</span></label>
             <select>
               <option>Менеджер</option>
               <option>Эксперт</option>
@@ -1292,7 +1674,7 @@
           </div>
 
           <div class="form-row">
-            <label>Слот <span class="hint">время суток</span></label>
+            <label>Слот <span class="hint">из CRUD-настроек выбранной роли</span></label>
             <div style="display: flex; gap: 8px;">
               <label style="display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); border-radius: 7px; cursor: pointer; font-weight: 500;">
                 <input type="radio" name="slot" checked style="margin: 0;"> 🌅 Утро (09:00)
@@ -1406,7 +1788,7 @@
   <div class="page-header">
     <div>
       <h2>Пользователи</h2>
-      <div class="subtitle">3 412 всего · 1 247 активны сегодня · 287 в free trial</div>
+      <div class="subtitle">3 412 всего · 1 247 активны сегодня · PAYWALL_ENABLED=false</div>
     </div>
     <button class="btn btn-secondary">📥 Экспорт CSV</button>
   </div>
@@ -1417,7 +1799,7 @@
       <button>Активные</button>
       <button>На паузе</button>
       <button>Закончили</button>
-      <button>Trial</button>
+      <button>Free</button>
     </div>
     <div class="filter-group">
       <button class="active">Все роли</button>
@@ -1434,9 +1816,9 @@
       <thead>
         <tr>
           <th>Имя</th>
-          <th>Роль</th>
+          <th>Роль клиента</th>
           <th style="width: 100px;">День</th>
-          <th>Тариф</th>
+          <th>Доступ</th>
           <th>Статус</th>
           <th>Заходил</th>
           <th>Настроение</th>
@@ -1455,7 +1837,7 @@
           </td>
           <td>Менеджер</td>
           <td><span class="day-chip">14 / 90</span></td>
-          <td><span class="badge badge-accent">90 дней</span></td>
+          <td><span class="badge badge-success">Free</span></td>
           <td><span class="badge badge-success badge-dot">Активна</span></td>
           <td>2 минуты назад</td>
           <td><span style="color: var(--success); font-weight: 600;">8.2</span></td>
@@ -1472,7 +1854,7 @@
           </td>
           <td>М. менеджеров</td>
           <td><span class="day-chip">52 / 90</span></td>
-          <td><span class="badge badge-accent">Навсегда</span></td>
+          <td><span class="badge badge-success">Free</span></td>
           <td><span class="badge badge-success badge-dot">Активен</span></td>
           <td>17 минут назад</td>
           <td><span style="color: var(--success); font-weight: 600;">9.1</span></td>
@@ -1489,7 +1871,7 @@
           </td>
           <td>CEO</td>
           <td><span class="day-chip">7 / 90</span></td>
-          <td><span class="badge badge-accent">Месяц</span></td>
+          <td><span class="badge badge-success">Free</span></td>
           <td><span class="badge badge-warn badge-dot">На паузе</span></td>
           <td>2 дня назад</td>
           <td><span style="color: var(--warn); font-weight: 600;">5.8</span></td>
@@ -1506,7 +1888,7 @@
           </td>
           <td>Эксперт</td>
           <td><span class="day-chip">3 / 90</span></td>
-          <td><span class="badge badge-neutral">Trial</span></td>
+          <td><span class="badge badge-success">Free</span></td>
           <td><span class="badge badge-success badge-dot">Активен</span></td>
           <td>5 минут назад</td>
           <td><span style="color: var(--text-muted);">—</span></td>
@@ -1523,7 +1905,7 @@
           </td>
           <td>Менеджер</td>
           <td><span class="day-chip">90 / 90</span></td>
-          <td><span class="badge badge-accent">Навсегда</span></td>
+          <td><span class="badge badge-success">Free</span></td>
           <td><span class="badge badge-neutral badge-dot">Финал</span></td>
           <td>1 час назад</td>
           <td><span style="color: var(--success); font-weight: 600;">9.4</span></td>
@@ -1540,7 +1922,7 @@
           </td>
           <td>Менеджер</td>
           <td><span class="day-chip">22 / 90</span></td>
-          <td><span class="badge badge-accent">90 дней</span></td>
+          <td><span class="badge badge-success">Free</span></td>
           <td><span class="badge badge-danger badge-dot">Молчит 5+ дней</span></td>
           <td>5 дней назад</td>
           <td><span style="color: var(--danger); font-weight: 600;">3.2</span></td>
@@ -1557,7 +1939,7 @@
           </td>
           <td>Эксперт</td>
           <td><span class="day-chip">31 / 90</span></td>
-          <td><span class="badge badge-accent">Месяц</span></td>
+          <td><span class="badge badge-success">Free</span></td>
           <td><span class="badge badge-success badge-dot">Активна</span></td>
           <td>30 минут назад</td>
           <td><span style="color: var(--success); font-weight: 600;">7.6</span></td>
@@ -1575,6 +1957,7 @@
       <div class="subtitle">@anna_s · TG ID 4291825832 · регистрация 13 апреля 2026</div>
     </div>
     <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary" data-page="users">← К списку</button>
       <button class="btn btn-secondary">⏸ Пауза</button>
       <button class="btn btn-secondary">↩ Вернуть к дню…</button>
       <button class="btn btn-secondary">✉ Написать</button>
@@ -1588,7 +1971,7 @@
         <button data-tab="journal">Дневник <span class="count">12</span></button>
         <button data-tab="mood">Настроение</button>
         <button data-tab="deliveries">Доставки <span class="count">42</span></button>
-        <button data-tab="payments">Платежи <span class="count">1</span></button>
+        <button data-tab="payments">Доступ</button>
       </div>
 
       <!-- TAB: ОБЗОР -->
@@ -1837,36 +2220,25 @@
         </div>
       </div>
 
-      <!-- TAB: ПЛАТЕЖИ -->
+      <!-- TAB: ДОСТУП -->
       <div data-tab-pane="payments" class="tab-pane">
         <div class="card">
-          <div class="card-header"><h3>История платежей</h3></div>
-          <div class="card-body" style="padding: 0;">
-            <div style="padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <div style="font-weight: 500; font-size: 14px;">Тариф «90 дней»</div>
-                <div style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">16 апреля 2026, 10:14 · СБП · ID 5a1c8b73-dd91</div>
-              </div>
-              <div style="text-align: right;">
-                <div style="font-weight: 600; font-size: 16px;">4 990 ₽</div>
-                <span class="badge badge-success badge-dot" style="margin-top: 4px;">оплачено</span>
-              </div>
-            </div>
-            <div style="padding: 16px 20px;">
-              <div style="font-weight: 500; color: var(--text-muted); font-size: 13px;">Free trial · 13–15 апреля 2026</div>
-              <div style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">Бесплатно</div>
+          <div class="card-header"><h3>Статус доступа</h3></div>
+          <div class="card-body">
+            <div class="mode-banner" style="margin-bottom: 0;">
+              <span class="badge badge-success">Free</span>
+              <span>Пользователь в бесплатном режиме. Paywall выключен, дата окончания доступа не задана.</span>
             </div>
           </div>
         </div>
 
         <div class="card" style="margin-top: 16px;">
-          <div class="card-header"><h3>Действия</h3></div>
+          <div class="card-header"><h3>Действия после включения оплаты</h3></div>
           <div class="card-body">
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button class="btn btn-secondary">↻ Возврат за тариф</button>
-              <button class="btn btn-secondary">📧 Отправить чек повторно</button>
-              <button class="btn btn-secondary">🎁 Подарить продление</button>
-              <button class="btn btn-secondary" style="color: var(--danger);">⛔ Отменить подписку</button>
+              <button class="btn btn-secondary">Сделать founders</button>
+              <button class="btn btn-secondary">Подарить 30 дней</button>
+              <button class="btn btn-secondary" disabled>Возврат недоступен</button>
             </div>
           </div>
         </div>
@@ -1883,12 +2255,12 @@
           </div>
         </div>
 
-        <div class="info-row"><span class="info-label">Должность</span><span class="info-value">Менеджер</span></div>
+        <div class="info-row"><span class="info-label">Роль клиента</span><span class="info-value">Менеджер</span></div>
         <div class="info-row"><span class="info-label">Голос подкастов</span><span class="info-value">Мужской</span></div>
         <div class="info-row"><span class="info-label">Часовой пояс</span><span class="info-value">Москва (UTC+3)</span></div>
         <div class="info-row"><span class="info-label">Слоты</span><span class="info-value">09:00 / 13:00 / 19:00</span></div>
-        <div class="info-row"><span class="info-label">Тариф</span><span class="info-value"><span class="badge badge-accent">90 дней</span></span></div>
-        <div class="info-row"><span class="info-label">До конца тарифа</span><span class="info-value">76 дней</span></div>
+        <div class="info-row"><span class="info-label">Доступ</span><span class="info-value"><span class="badge badge-success">Free</span></span></div>
+        <div class="info-row"><span class="info-label">Paywall</span><span class="info-value">выключен</span></div>
         <div class="info-row"><span class="info-label">Темп</span><span class="info-value">1 день / день</span></div>
         <div class="info-row"><span class="info-label">Forensic ID</span><span class="info-value" style="font-family: monospace; font-size: 11px;">JZ4F7K2P9XQR3M8N</span></div>
       </div>
@@ -1927,23 +2299,23 @@
           <label>Кому отправить</label>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience" checked> <span>Всем активным <span style="color: var(--text-muted);">(2 845 человек)</span></span></label>
-            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience"> <span>По роли</span></label>
-            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience"> <span>По тарифу</span></label>
-            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience"> <span>Только «forever» <span style="color: var(--text-muted);">(253)</span></span></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience"> <span>По роли клиента</span></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience"> <span>По статусу доступа</span></label>
+            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience"> <span>Founders / первые участники <span style="color: var(--text-muted);">(253)</span></span></label>
             <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="audience"> <span>На паузе или молчат 5+ дней <span style="color: var(--text-muted);">(184)</span></span></label>
           </div>
         </div>
 
         <div class="form-row">
           <label>Заголовок <span class="hint">короткая строка, опционально</span></label>
-          <input type="text" placeholder="Например: Новый контент в клубе!">
+          <input type="text" placeholder="Например: Новый материал в программе!">
         </div>
 
         <div class="form-row">
           <label>Текст сообщения <span class="hint">поддерживается **жирный** и _курсив_</span></label>
-          <textarea style="min-height: 160px;">Друзья, в клубе «Навсегда» вышел новый блок: **Конфликт в команде — техники разрешения**.
+          <textarea style="min-height: 160px;">Друзья, в программе вышел новый блок: **Конфликт в команде — техники разрешения**.
 
-Послушать в боте: команда `/club`.
+Посмотреть можно прямо в боте.
 
 Хороших выходных!</textarea>
         </div>
@@ -1975,8 +2347,8 @@
         <div class="card-header"><h3>Превью</h3></div>
         <div class="card-body">
           <div class="tg-message">
-            <div>Друзья, в клубе «Навсегда» вышел новый блок: <strong>Конфликт в команде — техники разрешения</strong>.</div>
-            <div style="margin-top: 8px;">Послушать в боте: команда <code style="background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px;">/club</code>.</div>
+            <div>Друзья, в программе вышел новый блок: <strong>Конфликт в команде — техники разрешения</strong>.</div>
+            <div style="margin-top: 8px;">Посмотреть можно прямо в боте.</div>
             <div style="margin-top: 8px;">Хороших выходных!</div>
             <div class="lock">🔒 Это сообщение защищено от пересылки</div>
           </div>
@@ -2024,8 +2396,8 @@
           </tr>
           <tr>
             <td><strong>15 мая, 19:00</strong><br><span style="color: var(--text-muted); font-size: 12px;">через 18 дней</span></td>
-            <td>Новый блок в клубе «Навсегда»</td>
-            <td><span class="badge badge-accent">Тариф «Навсегда» · 253</span></td>
+            <td>Новый блок для первых участников</td>
+            <td><span class="badge badge-neutral">Founders · 253</span></td>
             <td><span class="badge badge-warn badge-dot">Ожидает</span></td>
             <td style="text-align: right;"><button class="btn btn-ghost">⋮</button></td>
           </tr>
@@ -2063,11 +2435,11 @@
           </tr>
           <tr>
             <td>8 апр, 12:00</td>
-            <td><strong>Скидка −20% на «Навсегда» до конца месяца</strong></td>
-            <td><span class="badge badge-accent">90 дней</span></td>
+            <td><strong>Открытое тестирование продолжается</strong></td>
+            <td><span class="badge badge-neutral">Free · активные</span></td>
             <td>514</td>
             <td><strong>478</strong> <span style="color: var(--text-muted); font-size: 12px;">93%</span></td>
-            <td>💰 84 купили</td>
+            <td>👍 84</td>
           </tr>
           <tr>
             <td>8 марта, 09:00</td>
@@ -2104,136 +2476,17 @@
   <div class="page-header">
     <div>
       <h2>Платежи</h2>
-      <div class="subtitle">528 412 ₽ за апрель · 1 247 успешных оплат · 24 возврата</div>
+      <div class="subtitle">Раздел появится после включения PAYWALL_ENABLED=true</div>
     </div>
-    <div style="display: flex; gap: 8px;">
-      <button class="btn btn-secondary">📊 Аналитика</button>
-      <button class="btn btn-secondary">📥 Экспорт CSV</button>
-    </div>
-  </div>
-
-  <div class="tabs" data-tab-group>
-    <button data-tab="pay-all" class="active">Все <span class="count">1271</span></button>
-    <button data-tab="pay-success">Успешные <span class="count">1247</span></button>
-    <button data-tab="pay-recur">Авто-списания <span class="count">253</span></button>
-    <button data-tab="pay-refunds">Возвраты <span class="count">24</span></button>
-    <button data-tab="pay-failed">Ошибки <span class="count">18</span></button>
-  </div>
-
-  <div class="filters">
-    <div class="filter-group">
-      <button class="active">Все способы</button>
-      <button>Карта</button>
-      <button>СБП</button>
-      <button>ЮMoney</button>
-      <button>SberPay</button>
-    </div>
-    <div class="tabs-pills">
-      <button>Сегодня</button>
-      <button class="active">Апрель</button>
-      <button>Март</button>
-      <button>Q1 2026</button>
-    </div>
-    <input class="search" placeholder="Поиск по имени или ID платежа…">
   </div>
 
   <div class="card">
-    <table class="data">
-      <thead>
-        <tr>
-          <th>Дата</th>
-          <th>Пользователь</th>
-          <th>Тариф</th>
-          <th>Способ</th>
-          <th>Сумма</th>
-          <th>Статус</th>
-          <th>ID</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>26 апр, 16:42</td>
-          <td><strong>Анна Соколова</strong></td>
-          <td><span class="badge badge-accent">90 дней</span></td>
-          <td>СБП</td>
-          <td><strong>4 990 ₽</strong></td>
-          <td><span class="badge badge-success badge-dot">Оплачен</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">2c8f4a91-ee42</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-        <tr>
-          <td>26 апр, 16:25</td>
-          <td><strong>Дмитрий Орлов</strong></td>
-          <td><span class="badge badge-accent">Навсегда</span></td>
-          <td>Карта Mastercard ··6741</td>
-          <td><strong>14 990 ₽</strong></td>
-          <td><span class="badge badge-success badge-dot">Оплачен</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">7d3b1f02-aa18</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-        <tr>
-          <td>26 апр, 15:42</td>
-          <td><strong>Елена Войтенко</strong></td>
-          <td><span class="badge badge-accent">Месяц</span></td>
-          <td>СБП</td>
-          <td><strong>1 990 ₽</strong></td>
-          <td><span class="badge badge-success badge-dot">Оплачен</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">a91f37b4-c2d5</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-        <tr>
-          <td>26 апр, 14:30</td>
-          <td><strong>Михаил Петров</strong></td>
-          <td><span class="badge badge-accent">Неделя</span></td>
-          <td>Карта Visa ··3819</td>
-          <td><strong>590 ₽</strong></td>
-          <td><span class="badge badge-success badge-dot">Оплачен</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">b41e8c93-7f2a</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-        <tr>
-          <td>26 апр, 13:18</td>
-          <td><strong>Иван Козлов</strong></td>
-          <td><span class="badge badge-accent">Навсегда</span></td>
-          <td>Авто-списание (карта ··2841)</td>
-          <td><strong>1 490 ₽</strong></td>
-          <td><span class="badge badge-success badge-dot">Авто</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">f82c1e94-3d50</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-        <tr>
-          <td>26 апр, 12:05</td>
-          <td><strong>Ольга Ким</strong></td>
-          <td><span class="badge badge-accent">Месяц</span></td>
-          <td>SberPay</td>
-          <td><strong>1 990 ₽</strong></td>
-          <td><span class="badge badge-warn badge-dot">Возврат</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">9b71d8e0-4a1c</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-        <tr>
-          <td>26 апр, 11:42</td>
-          <td><strong>Сергей Гончаров</strong></td>
-          <td><span class="badge badge-accent">Неделя</span></td>
-          <td>Карта Visa ··9182</td>
-          <td><strong>590 ₽</strong></td>
-          <td><span class="badge badge-danger badge-dot">Отказ банка</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">3e4f9c01-12b7</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-        <tr>
-          <td>26 апр, 10:14</td>
-          <td><strong>Татьяна Лебедева</strong></td>
-          <td><span class="badge badge-accent">90 дней</span></td>
-          <td>СБП</td>
-          <td><strong>4 990 ₽</strong></td>
-          <td><span class="badge badge-success badge-dot">Оплачен</span></td>
-          <td style="font-family: monospace; color: var(--text-muted); font-size: 11px;">5a1c8b73-dd91</td>
-          <td><button class="btn btn-ghost">⋮</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="card-body">
+      <div class="mode-banner" style="margin-bottom: 0;">
+        <span class="badge badge-warn badge-dot">Отключено</span>
+        <span>При текущем флаге все пользователи имеют бесплатный доступ. После включения оплаты здесь появятся транзакции, возвраты, ошибки списаний и экспорт CSV.</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2248,63 +2501,118 @@
 
   <div class="tabs" data-tab-group>
     <button data-tab="settings-bot" class="active">Бот</button>
+    <button data-page="roles">Роли клиентов <span class="count">↗</span></button>
+    <button data-page="slots">Слоты <span class="count">↗</span></button>
     <button data-tab="settings-schedule">Расписание</button>
-    <button data-tab="settings-payments">Платежи</button>
+    <button data-tab="settings-payments">Оплата <span class="count">off</span></button>
     <button data-tab="settings-protection">Защита контента</button>
     <button data-tab="settings-team">Команда <span class="count">3</span></button>
   </div>
 
   <!-- TAB: БОТ -->
   <div data-tab-pane="settings-bot" class="tab-pane active">
-    <div class="card">
-      <div class="card-body">
-        <div class="form-row">
-          <label>Имя бота</label>
-          <input type="text" value="Первые 90 дней — твой ментор">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <h3>Профиль в Telegram</h3>
+          <span class="badge badge-success badge-dot">sync ok</span>
         </div>
-        <div class="form-row">
-          <label>Username в Telegram</label>
-          <input type="text" value="@first90days_bot" disabled style="background: #f5f0e8;">
-        </div>
-        <div class="form-row">
-          <label>Bot Token <span class="hint">из BotFather</span></label>
-          <input type="text" value="••••••••••••••••••••••••AaBbCc1234" style="font-family: monospace; font-size: 12px;">
-        </div>
-        <div class="form-row">
-          <label>Описание <span class="hint">/start приветствие</span></label>
-          <textarea>Привет! Я бот «Первые 90 дней» — программа адаптации для новых менеджеров и руководителей. Расскажи мне о себе за минуту, и я начну сопровождать тебя.</textarea>
-        </div>
-        <div class="form-row">
-          <label>Логотип</label>
-          <div class="upload-zone" style="padding: 16px;">
-            <div class="uploaded-file">
-              <div class="file-icon" style="background: var(--accent); color: white;">PNG</div>
-              <div style="flex: 1;">
-                <div style="font-weight: 500;">first90-logo.png</div>
-                <div style="color: var(--text-muted); font-size: 12px;">512×512 · 24 КБ</div>
+        <div class="card-body">
+          <div class="mode-banner" style="margin-bottom: 14px;">
+            <span class="badge badge-neutral">Bot API</span>
+            <span>Имя, описания и аватар применяются в Telegram через API. Username остаётся в BotFather.</span>
+          </div>
+          <div class="form-row">
+            <label>Имя бота <span class="hint">setMyName · до 64 символов</span></label>
+            <input type="text" value="Первые 90 дней">
+          </div>
+          <div class="form-row">
+            <label>Username <span class="hint">read-only</span></label>
+            <input type="text" value="@first90days_bot" disabled style="background: #f5f0e8;">
+          </div>
+          <div class="form-row">
+            <label>Короткое описание <span class="hint">setMyShortDescription · до 120</span></label>
+            <textarea style="min-height: 70px;">90-дневная поддержка после нового назначения: спокойный ритм, подкасты, вопросы и практические подсказки.</textarea>
+          </div>
+          <div class="form-row">
+            <label>Длинное описание <span class="hint">setMyDescription · до 512</span></label>
+            <textarea>Бот «Первые 90 дней» помогает пройти первые три месяца в новой роли: каждый день присылает короткие материалы, вопросы для размышления, подкасты и практические подсказки.</textarea>
+          </div>
+          <div class="form-row">
+            <label>Аватар <span class="hint">setMyProfilePhoto</span></label>
+            <div class="upload-zone" style="padding: 16px;">
+              <div class="uploaded-file">
+                <div class="file-icon" style="background: var(--accent); color: white;">JPG</div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 500;">bot-avatar.jpg</div>
+                  <div style="color: var(--text-muted); font-size: 12px;">512×512 · 48 КБ · квадрат</div>
+                </div>
+                <button class="btn btn-ghost">Заменить</button>
               </div>
-              <button class="btn btn-ghost">Заменить</button>
             </div>
           </div>
         </div>
-        <div class="form-row">
-          <label>Команды бота <span class="hint">видны пользователю</span></label>
-          <div style="font-family: monospace; font-size: 12px; background: #fcf8f1; border: 1px solid var(--border); border-radius: 7px; padding: 10px; line-height: 1.7;">
-            /start — знакомство<br>
-            /pause — поставить программу на паузу<br>
-            /resume — продолжить<br>
-            /speed — изменить темп<br>
-            /back — вернуться к дню<br>
-            /skip — пропустить<br>
-            /journal — мои записи<br>
-            /mood — кривая настроения<br>
-            /club — клуб «Навсегда» (для подписчиков)<br>
-            /support — связаться с командой
-          </div>
+        <div class="editor-actions">
+          <button class="btn btn-secondary">Синхронизировать из Telegram</button>
+          <button class="btn btn-primary">Применить в Telegram</button>
         </div>
       </div>
-      <div class="editor-actions">
-        <button class="btn btn-primary">Сохранить</button>
+
+      <div>
+        <div class="card">
+          <div class="card-header"><h3>Превью профиля</h3></div>
+          <div class="card-body">
+            <div class="bot-profile-preview">
+              <div class="bot-photo">90</div>
+              <div>
+                <div class="bot-preview-name">Первые 90 дней</div>
+                <div class="bot-preview-username">@first90days_bot</div>
+                <div class="bot-preview-copy">90-дневная поддержка после нового назначения: спокойный ритм, подкасты, вопросы и практические подсказки.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <div class="card-header"><h3>Доступ к боту</h3></div>
+          <div class="card-body">
+            <div class="form-row">
+              <label>Bot Token <span class="hint">write-only из BotFather</span></label>
+              <div class="secret-row">
+                <span class="secret-pill">••••••••AaBbCc1234</span>
+                <button class="btn btn-secondary">Заменить</button>
+                <button class="btn btn-secondary">Проверить</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Webhook</label>
+              <input type="text" value="https://first90d.ru/tg/webhook" disabled style="background: #f5f0e8; font-family: monospace; font-size: 12px;">
+            </div>
+            <div class="form-row">
+              <label>Последний audit log</label>
+              <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                сегодня 14:22 · Наташа А. · setMyShortDescription · Telegram OK
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <div class="card-header"><h3>Команды бота</h3></div>
+          <div class="card-body">
+            <div style="font-family: monospace; font-size: 12px; background: #fcf8f1; border: 1px solid var(--border); border-radius: 7px; padding: 10px; line-height: 1.7;">
+              /start — знакомство<br>
+              /pause — поставить программу на паузу<br>
+              /resume — продолжить<br>
+              /speed — изменить темп<br>
+              /back — вернуться к дню<br>
+              /skip — пропустить<br>
+              /journal — мои записи<br>
+              /mood — кривая настроения<br>
+              /support — связаться с командой
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2312,27 +2620,27 @@
   <!-- TAB: РАСПИСАНИЕ -->
   <div data-tab-pane="settings-schedule" class="tab-pane">
     <div class="card">
-      <div class="card-header"><h3>Слоты доставки</h3></div>
+      <div class="card-header"><h3>Базовое расписание</h3></div>
       <div class="card-body">
         <div class="form-row">
-          <label>Утренний слот <span class="hint">привязан к user.delivery_hour</span></label>
+          <label>Базовое время пользователя <span class="hint">user.delivery_time</span></label>
           <div style="display: flex; align-items: center; gap: 12px;">
             <input type="text" value="09:00" style="width: 100px;">
-            <span style="color: var(--text-muted); font-size: 12px;">по локальному времени пользователя</span>
+            <span style="color: var(--text-muted); font-size: 12px;">от него считаются role_slots</span>
           </div>
         </div>
         <div class="form-row">
-          <label>Дневной слот <span class="hint">+4 часа от утра</span></label>
+          <label>Частота scheduler</label>
           <div style="display: flex; align-items: center; gap: 12px;">
-            <input type="text" value="13:00" style="width: 100px;">
-            <span style="color: var(--text-muted); font-size: 12px;">сдвиг от утреннего</span>
+            <input type="text" value="каждые 5 минут" style="width: 160px;">
+            <span style="color: var(--text-muted); font-size: 12px;">проверяет next_delivery_at</span>
           </div>
         </div>
         <div class="form-row">
-          <label>Вечерний слот <span class="hint">+10 часов от утра</span></label>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <input type="text" value="19:00" style="width: 100px;">
-            <span style="color: var(--text-muted); font-size: 12px;">сдвиг от утреннего</span>
+          <label>Слоты по ролям клиентов</label>
+          <div>
+            <span class="badge badge-success badge-dot">12 активных</span>
+            <span style="color: var(--text-muted); font-size: 12px; margin-left: 8px;">редактируются на странице «Слоты»</span>
           </div>
         </div>
       </div>
@@ -2342,15 +2650,15 @@
       <div class="card-header"><h3>Темп и пауза</h3></div>
       <div class="card-body">
         <div class="form-row">
-          <label>Тариф по умолчанию <span class="hint">для новых пользователей</span></label>
+          <label>Доступ по умолчанию <span class="hint">PAYWALL_ENABLED=false</span></label>
           <select style="width: 220px;">
-            <option>Free trial (3 дня)</option>
+            <option>Free · вся программа</option>
           </select>
         </div>
         <div class="form-row">
-          <label>Длина free trial</label>
+          <label>Trial при оплате</label>
           <div style="display: flex; align-items: center; gap: 8px;">
-            <input type="number" value="3" min="1" max="14" style="width: 80px;">
+            <input type="number" value="3" min="1" max="14" style="width: 80px;" disabled>
             <span style="color: var(--text-muted);">дней</span>
           </div>
         </div>
@@ -2393,7 +2701,7 @@
           </div>
         </div>
         <div class="form-row">
-          <label>За N дней до конца тарифа</label>
+          <label>За N дней до конца доступа <span class="hint">только PAYWALL=true</span></label>
           <div style="display: flex; align-items: center; gap: 12px;">
             <input type="number" value="1" style="width: 80px;">
             <span style="color: var(--text-muted); font-size: 13px;">→ нудж «продлеваем?»</span>
@@ -2411,26 +2719,39 @@
     <div class="card">
       <div class="card-header">
         <h3>ЮKassa</h3>
-        <span class="badge badge-success badge-dot">подключено</span>
+        <span class="badge badge-neutral badge-dot">выключено</span>
       </div>
       <div class="card-body">
+        <div class="mode-banner">
+          <span class="badge badge-warn badge-dot">PAYWALL_ENABLED=false</span>
+          <span>Секреты можно подготовить заранее, но платежи не показываются пользователям до включения флага.</span>
+        </div>
         <div class="form-row">
           <label>Shop ID</label>
-          <input type="text" value="9847251" style="font-family: monospace; width: 180px;">
+          <div class="secret-row">
+            <span class="secret-pill">не задан</span>
+            <button class="btn btn-secondary">Задать</button>
+          </div>
         </div>
         <div class="form-row">
-          <label>Secret Key <span class="hint">live-ключ ЮKassa</span></label>
-          <input type="text" value="••••••••••••••••••••live_aB3xK9p" style="font-family: monospace; font-size: 12px;">
+          <label>Secret Key <span class="hint">write-only</span></label>
+          <div class="secret-row">
+            <span class="secret-pill">не задан</span>
+            <button class="btn btn-secondary">Заменить</button>
+          </div>
         </div>
         <div class="form-row">
-          <label>Telegram Provider Token <span class="hint">из BotFather</span></label>
-          <input type="text" value="381764678:LIVE:•••••••••••••" style="font-family: monospace; font-size: 12px;">
+          <label>Telegram Provider Token <span class="hint">write-only</span></label>
+          <div class="secret-row">
+            <span class="secret-pill">не задан</span>
+            <button class="btn btn-secondary">Заменить</button>
+          </div>
         </div>
         <div class="form-row">
           <label>Среда</label>
           <div class="tabs-pills">
-            <button>Test</button>
-            <button class="active">Live</button>
+            <button class="active">Test</button>
+            <button>Live</button>
           </div>
         </div>
         <div class="form-row">
@@ -2452,28 +2773,28 @@
             <td>Неделя</td>
             <td><span class="badge badge-neutral">Разовый</span></td>
             <td><strong>590 ₽</strong></td>
-            <td><span class="badge badge-success badge-dot">Да</span></td>
+            <td><span class="badge badge-neutral badge-dot">Inactive</span></td>
           </tr>
           <tr>
             <td><code style="font-family: monospace; font-size: 12px;">extend_month</code></td>
             <td>Месяц</td>
             <td><span class="badge badge-neutral">Разовый</span></td>
             <td><strong>1 990 ₽</strong></td>
-            <td><span class="badge badge-success badge-dot">Да</span></td>
+            <td><span class="badge badge-neutral badge-dot">Inactive</span></td>
           </tr>
           <tr>
             <td><code style="font-family: monospace; font-size: 12px;">full_support</code></td>
             <td>90 дней</td>
             <td><span class="badge badge-neutral">Разовый</span></td>
             <td><strong>4 990 ₽</strong></td>
-            <td><span class="badge badge-success badge-dot">Да</span></td>
+            <td><span class="badge badge-neutral badge-dot">Inactive</span></td>
           </tr>
           <tr>
             <td><code style="font-family: monospace; font-size: 12px;">forever</code></td>
             <td>Навсегда</td>
             <td><span class="badge badge-accent">Рекуррентный 1 490 ₽/мес</span></td>
             <td><strong>14 990 ₽</strong> единоразово<br><span style="color: var(--text-muted); font-size: 11px;">или 1 490 ₽/мес</span></td>
-            <td><span class="badge badge-success badge-dot">Да</span></td>
+            <td><span class="badge badge-neutral badge-dot">Inactive</span></td>
           </tr>
         </tbody>
       </table>
@@ -2525,8 +2846,8 @@
         <div class="form-row">
           <label>Поведение <span class="hint">справка</span></label>
           <div style="background: #fcf8f1; border-radius: 8px; padding: 12px; font-size: 12.5px; line-height: 1.6;">
-            • Android — скриншоты <strong style="color: var(--success);">блокируются</strong> (FLAG_SECURE)<br>
-            • iOS — скриншоты проходят <span style="color: var(--text-muted);">(известный баг Telegram)</span><br>
+            • Android — скриншоты обычно <strong style="color: var(--success);">блокируются</strong> (FLAG_SECURE)<br>
+            • iOS — скриншоты считаем возможными <span style="color: var(--text-muted);">(ограничение Telegram-клиента)</span><br>
             • Forwarding/save/copy блокируется на всех платформах
           </div>
         </div>
@@ -2608,12 +2929,25 @@
           <tr>
             <td>
               <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="avatar" style="width: 28px; height: 28px; font-size: 11px;">ДБ</div>
+                <strong>Дмитрий Б.</strong>
+              </div>
+            </td>
+            <td>mityay@first90days.ru</td>
+            <td><span class="badge badge-accent">Owner</span></td>
+            <td>вчера</td>
+            <td><span class="badge badge-success badge-dot">Активен</span></td>
+            <td><button class="btn btn-ghost">⋮</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 10px;">
                 <div class="avatar" style="width: 28px; height: 28px; font-size: 11px;">НА</div>
                 <strong>Наташа А.</strong>
               </div>
             </td>
             <td>natasha@first90days.ru</td>
-            <td><span class="badge badge-accent">Owner</span></td>
+            <td><span class="badge badge-accent">Admin</span></td>
             <td>сейчас в системе</td>
             <td><span class="badge badge-success badge-dot">Активна</span></td>
             <td><button class="btn btn-ghost">⋮</button></td>
@@ -2629,19 +2963,6 @@
             <td><span class="badge badge-neutral">Editor</span></td>
             <td>2 часа назад</td>
             <td><span class="badge badge-success badge-dot">Активна</span></td>
-            <td><button class="btn btn-ghost">⋮</button></td>
-          </tr>
-          <tr>
-            <td>
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="avatar" style="width: 28px; height: 28px; font-size: 11px;">ДМ</div>
-                <strong>Дмитрий М.</strong>
-              </div>
-            </td>
-            <td>mityay@first90days.ru</td>
-            <td><span class="badge badge-accent">Admin</span></td>
-            <td>вчера</td>
-            <td><span class="badge badge-success badge-dot">Активен</span></td>
             <td><button class="btn btn-ghost">⋮</button></td>
           </tr>
         </tbody>
@@ -2708,28 +3029,62 @@
 <script>
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('backdrop');
-  const burger = document.getElementById('burger');
+  const menuTrigger = document.getElementById('menu-trigger');
 
-  function openSidebar() { sidebar.classList.add('open'); backdrop.classList.add('open'); }
-  function closeSidebar() { sidebar.classList.remove('open'); backdrop.classList.remove('open'); }
+  // Detail-страница / выезд из настроек → пункт меню, который должен подсвечиваться
+  const detailToMenu = {
+    'capsule-edit': 'capsules',
+    'user-detail':  'users',
+    'roles':        'settings',
+    'slots':        'settings',
+  };
 
-  burger.addEventListener('click', () => {
+  function openSidebar() {
+    sidebar.classList.add('open');
+    backdrop.classList.add('open');
+    menuTrigger.classList.add('open');
+    menuTrigger.setAttribute('aria-expanded', 'true');
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('open');
+    menuTrigger.classList.remove('open');
+    menuTrigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function navigate(page) {
+    const menuKey = detailToMenu[page] || page;
+    document.querySelectorAll('nav.menu a').forEach(a => a.classList.remove('active'));
+    const menuItem = document.querySelector(`nav.menu a[data-page="${menuKey}"]`);
+    if (menuItem) menuItem.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    window.scrollTo(0, 0);
+    if (window.innerWidth <= 768) closeSidebar();
+  }
+
+  menuTrigger.addEventListener('click', () => {
     sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
   });
   backdrop.addEventListener('click', closeSidebar);
 
   document.addEventListener('click', (e) => {
-    // SPA navigation
+    // SPA navigation по data-page
     const link = e.target.closest('[data-page]');
     if (link) {
       e.preventDefault();
-      const page = link.dataset.page;
-      document.querySelectorAll('nav.menu a').forEach(a => a.classList.remove('active'));
-      link.classList.add('active');
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('page-' + page).classList.add('active');
-      window.scrollTo(0, 0);
-      if (window.innerWidth <= 768) closeSidebar();
+      navigate(link.dataset.page);
+      return;
+    }
+
+    // Кликабельные строки списков → детальные страницы
+    if (e.target.closest('#page-capsules table.data tbody tr')) {
+      navigate('capsule-edit');
+      return;
+    }
+    if (e.target.closest('#page-users table.data tbody tr')) {
+      navigate('user-detail');
       return;
     }
 
