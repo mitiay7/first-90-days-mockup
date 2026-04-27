@@ -835,14 +835,16 @@
   /* Mobile top bar — hidden on desktop */
   .mobile-topbar {
     display: none;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 40;
     background: linear-gradient(180deg, #fefaf3 0%, #faf2e6 100%);
     border-bottom: 1px solid var(--border);
-    padding: 12px 14px;
+    padding: 10px 14px;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     box-shadow: 0 2px 8px rgba(60, 40, 20, 0.04);
   }
 
@@ -889,6 +891,12 @@
     color: var(--heading);
     line-height: 1.2;
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    padding-right: 44px;
   }
 
   .sidebar-backdrop {
@@ -917,26 +925,43 @@
     /* Body перестаёт быть flex-row, иначе sticky-topbar сжимается в колонку */
     body { display: block; }
 
-    .mockup-banner { font-size: 10px; padding: 4px 10px; top: 8px; right: 8px; }
+    .mockup-banner { display: none; }
 
     .mobile-topbar { display: flex; }
+    .mobile-topbar .menu-trigger {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      justify-content: center;
+      border-radius: 10px;
+    }
+    .mobile-topbar .menu-trigger span { display: none; }
 
     aside.sidebar {
-      transform: translateX(-100%);
-      transition: transform 0.25s ease;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      height: 100dvh;
+      transform: translateX(-108%);
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 0.25s ease, visibility 0.25s ease;
       z-index: 50;
       width: 280px;
       box-shadow: none;
     }
     aside.sidebar.open {
       transform: translateX(0);
+      visibility: visible;
+      pointer-events: auto;
       box-shadow: 0 0 40px rgba(40, 28, 18, 0.3);
     }
 
     main {
       margin-left: 0;
       max-width: 100vw;
-      padding: 16px 14px;
+      padding: 72px 14px 24px;
     }
 
     .page-header h2 { font-size: 22px; }
@@ -2720,7 +2745,7 @@
             </div>
             <div class="form-row">
               <label>Webhook</label>
-              <input type="text" value="https://first90d.ru/tg/webhook" disabled style="background: #f5f0e8; font-family: monospace; font-size: 12px;">
+              <input type="text" value="https://api.first90days.ru/tg/webhook" disabled style="background: #f5f0e8; font-family: monospace; font-size: 12px;">
             </div>
             <div class="form-row">
               <label>Последний audit log</label>
@@ -2858,7 +2883,14 @@
       <div class="card-body">
         <div class="mode-banner">
           <span class="badge badge-warn badge-dot">PAYWALL_ENABLED=false</span>
-          <span>Секреты можно подготовить заранее, но платежи не показываются пользователям до включения флага.</span>
+          <span>Платёжный provider зафиксирован: YooKassa API. Секреты можно подготовить заранее, но checkout скрыт до включения флага.</span>
+        </div>
+        <div class="form-row">
+          <label>Provider</label>
+          <div>
+            <span class="badge badge-accent">PAYMENT_PROVIDER=yookassa_api</span>
+            <span style="color: var(--text-muted); font-size: 12px; margin-left: 8px;">бот открывает checkout/WebApp, webhook активирует доступ</span>
+          </div>
         </div>
         <div class="form-row">
           <label>Shop ID</label>
@@ -2875,13 +2907,6 @@
           </div>
         </div>
         <div class="form-row">
-          <label>Telegram Provider Token <span class="hint">write-only</span></label>
-          <div class="secret-row">
-            <span class="secret-pill">не задан</span>
-            <button class="btn btn-secondary">Заменить</button>
-          </div>
-        </div>
-        <div class="form-row">
           <label>Среда</label>
           <div class="tabs-pills">
             <button class="active">Test</button>
@@ -2889,8 +2914,12 @@
           </div>
         </div>
         <div class="form-row">
-          <label>Webhook URL <span class="hint">для рекуррентных уведомлений</span></label>
+          <label>Webhook URL <span class="hint">для платежей и подписок</span></label>
           <input type="text" value="https://api.first90days.ru/yookassa/webhook" disabled style="background: #f5f0e8; font-family: monospace; font-size: 12px;">
+        </div>
+        <div class="form-row">
+          <label>Return URL</label>
+          <input type="text" value="https://first90days.ru/pay/success" disabled style="background: #f5f0e8; font-family: monospace; font-size: 12px;">
         </div>
       </div>
     </div>
@@ -2926,7 +2955,7 @@
           <tr>
             <td><code style="font-family: monospace; font-size: 12px;">forever</code></td>
             <td>Навсегда</td>
-            <td><span class="badge badge-accent">Рекуррентный 1 490 ₽/мес</span></td>
+            <td><span class="badge badge-accent">YooKassa recurring · 1 490 ₽/мес</span></td>
             <td><strong>14 990 ₽</strong> единоразово<br><span style="color: var(--text-muted); font-size: 11px;">или 1 490 ₽/мес</span></td>
             <td><span class="badge badge-neutral badge-dot">Inactive</span></td>
           </tr>
@@ -2935,6 +2964,29 @@
       <div class="editor-actions">
         <button class="btn btn-secondary">+ Добавить тариф</button>
         <button class="btn btn-primary">Сохранить</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <div class="card-header"><h3>Подписки YooKassa</h3></div>
+      <div class="card-body">
+        <div class="form-row">
+          <label>Сохранять способ оплаты</label>
+          <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" checked disabled> save_payment_method=true для recurring SKU
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Текст согласия</label>
+          <textarea>Нажимая «Оплатить подписку», вы соглашаетесь на ежемесячное списание 1 490 ₽ до отмены подписки.</textarea>
+        </div>
+        <div class="form-row">
+          <label>Повторное списание</label>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="badge badge-neutral">cron daily</span>
+            <span style="color: var(--text-muted); font-size: 12px;">создаёт платёж по payment_method_id</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -3169,8 +3221,6 @@
   const detailToMenu = {
     'capsule-edit': 'capsules',
     'user-detail':  'users',
-    'roles':        'settings',
-    'slots':        'settings',
   };
 
   function openSidebar() {
